@@ -56,15 +56,14 @@ describe('mountComponent', () => {
     expect(node.innerHTML).toEqual('<h1>Ara Framework</h1>');
   });
 
-  // TODO Does this really matter ?
-  xtest('should mount component correctly ignoring html comments', () => {
-    document.body.innerHTML = '<div id="app"><!-- Comment --><div>';
+  test('should mount component correctly keeping html comments and removing previous DOM content', () => {
+    document.body.innerHTML = '<div id="app"><!-- Comment -->ce texte doit être enlevé<!-- Comment 2 --><span>cette balise aussi</span><!-- Comment 3 --><div>';
 
     const node = document.getElementById('app');
 
     mountComponent(component, node, { title: 'Ara Framework' });
 
-    expect(node.innerHTML).toEqual('<!-- Comment --><h1>Ara Framework</h1>');
+    expect(node.innerHTML).toEqual('<!-- Comment --><!-- Comment 2 --><!-- Comment 3 --><h1>Ara Framework</h1>');
   });
 });
 

@@ -10,6 +10,20 @@ type HypernovaPayload = {
 
 export { load } from 'hypernova';
 
+function getAllComments(rootElem) {
+  const comments: string[] = [];
+  const iterator = document.createNodeIterator(
+    rootElem,
+    NodeFilter.SHOW_COMMENT,
+  );
+  let curNode;
+  // eslint-disable-next-line no-cond-assign
+  while (curNode = iterator.nextNode()) {
+    comments.push(curNode.nodeValue);
+  }
+  return comments;
+}
+
 export const mountComponent = (
   component: Component,
   node: HTMLElement,
@@ -25,7 +39,13 @@ export const mountComponent = (
     app.use(plugin, ...options);
   });
 
+  const comments = getAllComments(node);
+
   app.mount(node);
+
+  comments.reverse().forEach((comment) => {
+    node.insertBefore(document.createComment(comment), node.firstChild);
+  });
 
   return app;
 };
